@@ -10,11 +10,12 @@ from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
-#S3 환경 변수 설정
+#aws key 환경 변수 가져오기
 app.config['S3_BUCKET_NAME'] = 'high-ball'
 app.config['S3_ACCESS_KEY'] = os.environ.get('S3_ACCESS_KEY')
 app.config['S3_SECRET_KEY'] = os.environ.get('S3_SECRET_KEY')
 
+#s3 연동
 s3 = boto3.client(
     's3',
     aws_access_key_id=app.config['S3_ACCESS_KEY'],
@@ -36,7 +37,7 @@ def key():
     
     return '터미널확인'
 
-#파일 업로드
+#이미지 업로드
 @app.route('/imgupload', methods=['POST'])
 def upload_file():
     file = request.files['file']
