@@ -1,5 +1,6 @@
 import os
 from flask import Flask, request 
+import uuid #고유 식별자(파일이름) 생성
 
 # aws s3 SDK
 import boto3
@@ -41,9 +42,14 @@ def key():
 @app.route('/imgupload', methods=['POST'])
 def upload_file():
     file = request.files['file']
+    
     if file:
+        folder = 'img/'  # 업로드할 폴더 이름
         filename = secure_filename(file.filename)
-        s3.upload_fileobj(file, app.config['S3_BUCKET_NAME'], filename)
+        unique_filename = str(uuid.uuid4()) + os.path.splitext(filename)[1]  # UUID를 사용하여 파일 이름 고유성 보장
+        key = os.path.join(folder, unique_filename)  # 경로 생성
+        
+        s3.upload_fileobj(file, app.config['S3_BUCKET_NAME'], key)
         return 'File uploaded successfully', 200
     
     return 'No file selected', 404
