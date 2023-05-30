@@ -11,6 +11,7 @@ from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
+
 #aws key 환경 변수 가져오기
 app.config['S3_BUCKET_NAME'] = 'high-ball'
 app.config['S3_ACCESS_KEY'] = os.environ.get('S3_ACCESS_KEY')
@@ -53,3 +54,6 @@ def upload_file():
         return 'File uploaded successfully', 200
     
     return 'No file selected', 404
+
+if __name__ == '__main__':
+   app.run('0.0.0.0', port=5000, debug=True)
