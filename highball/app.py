@@ -9,12 +9,24 @@ from botocore.client import Config
 #파일이름 보안 라이브러리
 from werkzeug.utils import secure_filename
 
+#Flask - RDS MySQL 설정
+from flask_mysqldb import MySQL
+
+
 app = Flask(__name__)
 
 #aws key 환경 변수 가져오기
 app.config['S3_BUCKET_NAME'] = 'high-ball'
 app.config['S3_ACCESS_KEY'] = os.environ.get('S3_ACCESS_KEY')
 app.config['S3_SECRET_KEY'] = os.environ.get('S3_SECRET_KEY')
+
+# Flask-MySQL 설정 (테스트용 환경변수 생략)
+app.config['MYSQL_HOST'] = 'highball-db-2.cuandfqvf8gh.ap-northeast-2.rds.amazonaws.com' #엔드포인트
+app.config['MYSQL_USER'] = 'admin'
+app.config['MYSQL_PASSWORD'] = 'qksw0978'
+app.config['MYSQL_DB'] = 'my_rds_name'#db이름
+
+mysql = MySQL(app)
 
 #s3 연동
 s3 = boto3.client(
@@ -43,6 +55,16 @@ def upload_file():
         return 'File uploaded successfully', 200
     
     return 'No file selected', 404
+
+#rds 연동 테스트
+@app.route('/db')
+def db_test():
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM user')
+    user = cur.fetchall()
+    cur.close()
+    
+    return str(user)
 
 if __name__ == '__main__':
    app.run('0.0.0.0', port=5000, debug=True)
