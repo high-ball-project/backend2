@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request 
+from flask import Flask, request, jsonify
 import uuid #고유 식별자(파일이름) 생성
 
 # aws s3 SDK
@@ -11,7 +11,6 @@ from werkzeug.utils import secure_filename
 
 #Flask - RDS MySQL 설정
 from flask_mysqldb import MySQL
-
 
 app = Flask(__name__)
 
@@ -65,6 +64,13 @@ def db_test():
     cur.close()
     
     return str(user)
+
+#임파선 전이 진단 테스트 API
+@app.route('/diagnosis', methods=['GET'])
+def get_data():
+    data = {'imageUrl': 'asdfasdf', 'result': True}
+    return jsonify(data)
+
 
 if __name__ == '__main__':
    app.run('0.0.0.0', port=5000, debug=True)
