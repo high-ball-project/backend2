@@ -146,7 +146,7 @@ def get_post(post_id):
     else:
         return '게시글을 찾을 수 없습니다.', 404
 
-# 글 작성
+#글 작성
 @app.route('/board/add', methods=['POST'])
 def add_post():
     #파라미터 받기
@@ -156,15 +156,12 @@ def add_post():
     writer = data['writer']
     title = data['title']
     content = data['content']
-    createdAt = data['createdAt']
-    updatedAt = data['updatedAt']
-    deletedAt = data['deletedAt']
     category = data['category']
     img_path = data['img_path']
     
     try:
         cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO posts(writer, title, content, createdAt, updatedAt, deletedAt, category, img_path) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)", (writer, title, content, createdAt, updatedAt, deletedAt, category, img_path))
+        cur.execute("INSERT INTO posts(writer, title, content, category, img_path) VALUES(%s, %s, %s, %s, %s)", (writer, title, content, category, img_path))
         mysql.connection.commit()
         cur.close()
         return 'new posting successfully', 200
@@ -172,6 +169,28 @@ def add_post():
     except Exception as e:
         return 'new posting failed: ' + str(e), 500
 
+#글 수정
+@app.route('/board/update/<int:id>', methods=['POST'])
+def update_post(id):
+    #파라미터 받기
+    data = request.data.decode('utf-8')
+    data = eval(data)
+    
+    writer = data['writer']
+    title = data['title']
+    content = data['content']
+    category = data['category']
+    img_path = data['img_path']
+    
+    try:
+        cur = mysql.connection.cursor()
+        cur.execute("UPDATE board SET(writer=%s, title=%s, content=%s, category=%s, img_path=%s WHERE id=%s)", (writer, title, content, category, img_path, id))
+        mysql.connection.commit()
+        cur.close()
+        return 'new posting successfully', 200
+
+    except Exception as e:
+        return 'new posting failed: ' + str(e), 500
 
 
 
