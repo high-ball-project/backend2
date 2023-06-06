@@ -137,12 +137,14 @@ def get_post(post_id):
     board = cur.fetchall()
     cur.close()
     
-    if board:
-        return jsonify(board), 200
+    # 딕셔너리로 변환
+    keys = ["id", "writer", "content", "createdAt", "updatedAt", "deletedAt", "category", "img_path"]
+    result = [dict(zip(keys, item)) for item in board]
+    
+    if result:
+        return jsonify(result[0]), 200
     else:
         return '게시글을 찾을 수 없습니다.', 404
-
-
 
 
 
