@@ -192,7 +192,21 @@ def update_post(id):
     except Exception as e:
         return 'new posting failed: ' + str(e), 500
 
-
+#글 삭제
+@app.route('/board/delete/<int:id>', methods=['POST'])
+def delete_post(id):
+    cursor = mysql.connection.cursor()
+    
+    # ID와 일치하는 게시글을 찾기
+    cursor.execute("SELECT * FROM board WHERE id = %s", (id))
+    post = cursor.fetchone()
+    
+    if post:
+        cursor.execute("UPDATE board SET(deletedAt=CURRENT_TIMESTAMP() WHERE id=%s)", (id))
+        mysql.connection.commit()
+        return jsonify({'message': '게시글이 삭제되었습니다.'}), 200
+    else:
+        return jsonify({'message': 'ID에 해당하는 게시글이 없습니다.'}), 404
 
 if __name__ == '__main__':
    app.run('0.0.0.0', port=5000, debug=True)
