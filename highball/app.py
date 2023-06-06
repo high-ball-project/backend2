@@ -124,7 +124,7 @@ def board():
     cur.close()
    
     # 각 항목을 딕셔너리로 변환
-    keys = ["id", "writer", "content", "createdAt", "updatedAt", "deletedAt", "category", "img_path"]
+    keys = ["id", "title", "writer", "content", "createdAt", "updatedAt", "deletedAt", "category", "img_path"]
     result = [dict(zip(keys, item)) for item in board]
     
     return jsonify(result)
@@ -138,13 +138,40 @@ def get_post(post_id):
     cur.close()
     
     # 딕셔너리로 변환
-    keys = ["id", "writer", "content", "createdAt", "updatedAt", "deletedAt", "category", "img_path"]
+    keys = ["id", "title", "writer", "content", "createdAt", "updatedAt", "deletedAt", "category", "img_path"]
     result = [dict(zip(keys, item)) for item in board]
     
     if result:
         return jsonify(result[0]), 200
     else:
         return '게시글을 찾을 수 없습니다.', 404
+
+# 글 작성
+@app.route('/board/add', methods=['POST'])
+def add_post():
+    #파라미터 받기
+    data = request.data.decode('utf-8')
+    data = eval(data)
+    
+    writer = data['writer']
+    title = data['title']
+    content = data['content']
+    createdAt = data['createdAt']
+    updatedAt = data['updatedAt']
+    deletedAt = data['deletedAt']
+    category = data['category']
+    img_path = data['img_path']
+    
+    try:
+        cur = mysql.connection.cursor()
+        cur.execute("INSERT INTO posts(writer, title, content, createdAt, updatedAt, deletedAt, category, img_path) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)", (writer, title, content, createdAt, updatedAt, deletedAt, category, img_path))
+        mysql.connection.commit()
+        cur.close()
+        return 'new posting successfully', 200
+
+    except Exception as e:
+        return 'new posting failed: ' + str(e), 500
+
 
 
 
