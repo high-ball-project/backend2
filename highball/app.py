@@ -41,8 +41,8 @@ s3 = boto3.client(
 def hello_world():
     return 'Hello, World!'
 
-#이미지 업로드 테스트 코드
-@app.route('/imgupload', methods=['POST'])
+#S3 이미지 업로드
+@app.route('/s3/imgupload', methods=['POST'])
 def upload_file():
     file = request.files['file']
     
@@ -53,7 +53,7 @@ def upload_file():
         key = os.path.join(folder, unique_filename)  # 경로 생성
         
         s3.upload_fileobj(file, app.config['S3_BUCKET_NAME'], key)
-        return 'File uploaded successfully', 200
+        return str(unique_filename), 200
     
     return 'No file selected', 404
 
@@ -67,8 +67,50 @@ def db_test():
     
     return str(user)
 
+#진단 데이터 RDS 업로드
+@app.route('/db/upload', methods=['POST'])
+def upload_to_db():
+    #파라미터 받기
+    data = request.data.decode('utf-8')
+    data = eval(data)
+    
+    img_path = data['img_path']
+    age = data['나이']
+    date = data['수술연월일']
+    disease = data['진단명']
+    cancerPoint = data['암의 위치']
+    cancerN = data['암의 개수']
+    cancerLen = data['암의 장경']
+    NG = data['NG']
+    HG = data['HG']
+    ER = data['ER']
+    PR = data['PR']
+    HG_score_1 = data['HG_score_1']
+    HG_score_2 = data['HG_score_2']
+    HG_score_3 = data['HG_score_3']
+    DCIS_or_LCIS = data['DCIS_or_LCIS_여부']
+    DCIS_or_LCIS_type = data['DCIS_or_LCIS_type']
+    T_category = data['T_category']
+    ER_Allred_score = data['ER_Allred_score']
+    PR_Allred_score = data['PR_Allred_score']
+    KI_67_LI_percent = data['KI-67_LI_percent']
+    HER2 = data['HER2']
+    HER2_IHC = data['HER2_IHC']
+    HER2_SISH = data['HER2_SISH']
+    HER2_SISH_ratio = data['HER2_SISH_ratio']
+    BRCA_mutation = data['BRCA_mutation']
 
+    # DB Insert
+    cur = mysql.connection.cursor()
+    try:
+        cur.execute("INSERT INTO clinical_info (img_path, `나이`, `수술연월일`, `진단명`, `암의 위치`, `암의 개수`, `암의 장경`, NG, HG, HG_score_1, HG_score_2, HG_score_3, DCIS_or_LCIS_여부, DCIS_or_LCIS_type, T_category, ER, ER_Allred_score, PR, PR_Allred_score, `KI-67_LI_percent`, HER2, HER2_IHC, HER2_SISH, HER2_SISH_ratio, BRCA_mutation) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                    (img_path, age, date, disease, cancerPoint, cancerN, cancerLen, NG, HG, HG_score_1, HG_score_2, HG_score_3, DCIS_or_LCIS, DCIS_or_LCIS_type, T_category, ER, ER_Allred_score, PR, PR_Allred_score, KI_67_LI_percent, HER2, HER2_IHC, HER2_SISH, HER2_SISH_ratio, BRCA_mutation))
+        mysql.connection.commit()
+        cur.close()
+        return 'RDS Insert successfully', 200
 
+    except Exception as e:
+        return 'RDS Insert failed: ' + str(e), 500
 
 if __name__ == '__main__':
    app.run('0.0.0.0', port=5000, debug=True)
