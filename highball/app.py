@@ -1,7 +1,8 @@
 import os
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 import uuid #고유 식별자(파일이름) 생성
+import base64
 
 # aws s3 SDK
 import boto3
@@ -58,6 +59,23 @@ def upload_file():
         return str(unique_filename), 200
     
     return 'No file selected', 404
+
+#s3 이미지 불러오기
+@app.route('/image')
+def show_image():
+    bucket_name = app.config['S3_BUCKET_NAME']
+    image_key = 'img/f260959a-e8c3-4d9f-804e-3b529dabb816.jpg'
+    
+    try:
+        response = s3.get_object(Bucket=bucket_name, Key=image_key)
+        image_data = response['Body'].read()
+        image_base64 = base64.b64encode(image_data).decode('utf-8')
+        image_url = f"data:image/jpeg;base64,{image_base64}"
+        
+    except Exception as e:
+        return str(e), 500
+    
+    return render_template('image.html', image_url=image_url)
 
 #rds 연동 테스트
 @app.route('/db')
