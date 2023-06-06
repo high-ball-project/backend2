@@ -14,6 +14,8 @@ from werkzeug.utils import secure_filename
 from flask_mysqldb import MySQL
 
 app = Flask(__name__)
+
+app.config['JSON_AS_ASCII'] = False #한글 깨짐 해결
 CORS(app) # 모든 경로에 대해 CORS 활성화
 
 #aws key 환경 변수 가져오기
@@ -111,6 +113,38 @@ def upload_to_db():
 
     except Exception as e:
         return 'RDS Insert failed: ' + str(e), 500
+
+#======CRUD 게시판========
+#전체 글 보기
+@app.route('/board')
+def board():
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM board')
+    board = cur.fetchall()
+    cur.close()
+   
+    # 각 항목을 딕셔너리로 변환
+    keys = ["id", "writer", "content", "createdAt", "updatedAt", "deletedAt", "category", "img_path"]
+    result = [dict(zip(keys, item)) for item in board]
+    
+    return jsonify(result)
+
+#글 상세 보기
+@app.route("/board/<int:post_id>", methods=["GET"])
+def get_post(post_id):
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM board WHERE id = %s', (post_id,))
+    board = cur.fetchall()
+    cur.close()
+    
+    if board:
+        return jsonify(board), 200
+    else:
+        return '게시글을 찾을 수 없습니다.', 404
+
+
+
+
 
 if __name__ == '__main__':
    app.run('0.0.0.0', port=5000, debug=True)
