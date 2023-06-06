@@ -19,11 +19,11 @@ app.config['S3_BUCKET_NAME'] = 'high-ball'
 app.config['S3_ACCESS_KEY'] = os.environ.get('S3_ACCESS_KEY')
 app.config['S3_SECRET_KEY'] = os.environ.get('S3_SECRET_KEY')
 
-# Flask-MySQL 설정 (테스트용 환경변수 생략)
-app.config['MYSQL_HOST'] = 'highball-db-2.cuandfqvf8gh.ap-northeast-2.rds.amazonaws.com' #엔드포인트
-app.config['MYSQL_USER'] = 'admin'
-app.config['MYSQL_PASSWORD'] = 'qksw0978'
-app.config['MYSQL_DB'] = 'my_rds_name'#db이름
+# Flask-MySQL 설정
+app.config['MYSQL_HOST'] = os.environ.get('MYSQL_HOST') #엔드포인트
+app.config['MYSQL_USER'] = os.environ.get('MYSQL_USER')
+app.config['MYSQL_PASSWORD'] = os.environ.get('MYSQL_PASSWORD')
+app.config['MYSQL_DB'] = os.environ.get('MYSQL_DB')
 
 mysql = MySQL(app)
 
@@ -39,7 +39,7 @@ s3 = boto3.client(
 def hello_world():
     return 'Hello, World!'
 
-#이미지 업로드
+#이미지 업로드 테스트 코드
 @app.route('/imgupload', methods=['POST'])
 def upload_file():
     file = request.files['file']
@@ -65,11 +65,7 @@ def db_test():
     
     return str(user)
 
-#임파선 전이 진단 테스트 API
-@app.route('/diagnosis', methods=['GET'])
-def get_data():
-    data = {'imageUrl': 'asdfasdf', 'result': True}
-    return jsonify(data)
+
 
 
 if __name__ == '__main__':
