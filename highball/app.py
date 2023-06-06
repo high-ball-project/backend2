@@ -1,5 +1,6 @@
 import os
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import uuid #고유 식별자(파일이름) 생성
 
 # aws s3 SDK
@@ -13,6 +14,7 @@ from werkzeug.utils import secure_filename
 from flask_mysqldb import MySQL
 
 app = Flask(__name__)
+CORS(app) # 모든 경로에 대해 CORS 활성화
 
 #aws key 환경 변수 가져오기
 app.config['S3_BUCKET_NAME'] = 'high-ball'
