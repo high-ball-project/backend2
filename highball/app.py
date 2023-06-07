@@ -180,11 +180,10 @@ def add_post():
     title = data['title']
     content = data['content']
     category = data['category']
-    clinical_id = data['clinical_id']
     
     try:
         cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO posts(writer, title, content, category, clinical_id) VALUES(%s, %s, %s, %s, %s)", (writer, title, content, category, clinical_id))
+        cur.execute("INSERT INTO board(writer, title, content, category) VALUES(%s, %s, %s, %s)", (writer, title, content, category))
         mysql.connection.commit()
         cur.close()
         return 'new posting successfully', 200
