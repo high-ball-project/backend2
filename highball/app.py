@@ -202,17 +202,16 @@ def update_post(id):
     title = data['title']
     content = data['content']
     category = data['category']
-    img_path = data['img_path']
     
     try:
         cur = mysql.connection.cursor()
-        cur.execute("UPDATE board SET(writer=%s, title=%s, content=%s, category=%s, img_path=%s WHERE id=%s)", (writer, title, content, category, img_path, id))
+        cur.execute("UPDATE board SET(writer=%s, title=%s, content=%s, category=%s WHERE id=%s)", (writer, title, content, category, id))
         mysql.connection.commit()
         cur.close()
         return 'updated successfully', 200
 
     except Exception as e:
-        return 'updated failed: ' + str(e), 500
+        return 'updated failed' + str(e), 500
 
 #글 삭제
 @app.route('/board/delete/<int:id>', methods=['POST'])
@@ -226,10 +225,9 @@ def delete_post(id):
     if post:
         cursor.execute("UPDATE board SET(deletedAt=CURRENT_TIMESTAMP() WHERE id=%s)", (id,))
         mysql.connection.commit()
-        return jsonify({'message': '게시글이 삭제되었습니다.'}), 200
+        return 'deleted successfully', 200
     else:
-        return jsonify({'message': 'ID에 해당하는 게시글이 없습니다.'}), 404
-    
+        return 'updated failed', 500
 
 #========== 검진 데이터 CRUD
 #검진 데이터 가져오기
