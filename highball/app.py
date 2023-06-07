@@ -183,7 +183,12 @@ def add_post():
     
     try:
         cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO board(writer, title, content, category, clinical_id) VALUES(%s, %s, %s, %s, %s)", (writer, title, content, category, clinical_id))
+        
+        if clinical_id:
+            cur.execute("INSERT INTO board(writer, title, content, category, clinical_id) VALUES(%s, %s, %s, %s, %s)", (writer, title, content, category, clinical_id))
+        else:
+            cur.execute("INSERT INTO board(writer, title, content, category) VALUES(%s, %s, %s, %s)", (writer, title, content, category))
+
         mysql.connection.commit()
         cur.close()
         return 'new posting successfully', 200
