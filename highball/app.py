@@ -160,7 +160,7 @@ def get_post(post_id):
     cur.close()
     
     # 딕셔너리로 변환
-    keys = ["id", "title", "writer", "content", "createdAt", "updatedAt", "deletedAt", "category", "img_path", 'clinical_id']
+    keys = ["id", "title", "writer", "content", "createdAt", "updatedAt", "deletedAt", "category", 'clinical_id']
     result = [dict(zip(keys, item)) for item in board]
     
     if result:
