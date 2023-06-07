@@ -184,7 +184,7 @@ def add_post():
     try:
         cur = mysql.connection.cursor()
         
-        if clinical_id:
+        if clinical_id != '0':
             cur.execute("INSERT INTO board(writer, title, content, category, clinical_id) VALUES(%s, %s, %s, %s, %s)", (writer, title, content, category, clinical_id))
         else:
             cur.execute("INSERT INTO board(writer, title, content, category) VALUES(%s, %s, %s, %s)", (writer, title, content, category))
@@ -207,10 +207,16 @@ def update_post(id):
     title = data['title']
     content = data['content']
     category = data['category']
+    clinical_id = data['clinical_id']
     
     try:
         cur = mysql.connection.cursor()
-        cur.execute("UPDATE board SET(writer=%s, title=%s, content=%s, category=%s WHERE id=%s)", (writer, title, content, category, id))
+        
+        if clinical_id != '0':
+            cur.execute("UPDATE board SET(writer=%s, title=%s, content=%s, category=%s  clinical_id=%s WHERE id=%s)", (writer, title, content, category,  clinical_id, id))
+        else:
+            cur.execute("UPDATE board SET(writer=%s, title=%s, content=%s, category=%s, WHERE id=%s)", (writer, title, content, category, clinical_id, id))
+
         mysql.connection.commit()
         cur.close()
         return 'updated successfully', 200
