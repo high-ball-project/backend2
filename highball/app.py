@@ -222,11 +222,11 @@ def delete_post(id):
     cursor = mysql.connection.cursor()
     
     # ID와 일치하는 게시글을 찾기
-    cursor.execute("SELECT * FROM board WHERE id = %s", (id))
+    cursor.execute("SELECT * FROM board WHERE id = %s", (id,))
     post = cursor.fetchone()
     
     if post:
-        cursor.execute("UPDATE board SET(deletedAt=CURRENT_TIMESTAMP() WHERE id=%s)", (id))
+        cursor.execute("UPDATE board SET(deletedAt=CURRENT_TIMESTAMP() WHERE id=%s)", (id,))
         mysql.connection.commit()
         return jsonify({'message': '게시글이 삭제되었습니다.'}), 200
     else:
@@ -239,7 +239,7 @@ def delete_post(id):
 def clinical(id):
     
     cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM clinical_info WHERE id=%s", (id))
+    cur.execute("SELECT * FROM clinical_info WHERE id=%s", (id,))
     clinical = cur.fetchall()
     cur.close()
    
@@ -248,9 +248,6 @@ def clinical(id):
     result = [dict(zip(keys, item)) for item in clinical]
     
     return jsonify(result)
-
-
-
 
 #========= 로그인 및 회원가입 간단한 구현 (보안x)
 #로그인
@@ -263,7 +260,7 @@ def login():
     pw = data['pw']
     
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT * FROM user WHERE id = %s;", (id))
+    cursor.execute("SELECT * FROM user WHERE id = %s;", (id,))
     user = cursor.fetchone()
     cursor.close()
     
