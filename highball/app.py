@@ -172,22 +172,26 @@ def get_post(post_id):
 @app.route('/board/add', methods=['POST'])
 def add_post():
     #파라미터 받기
-    data = request.data.decode('utf-8')
-    data = eval(data)
+    # data = request.data.decode('utf-8')
+    # data = eval(data)
     
-    writer = data['writer']
-    title = data['title']
-    content = data['content']
-    category = data['category']
-    clinical_id = data['clinical_id']
+    # writer = data['writer']
+    # title = data['title']
+    # content = data['content']
+    # category = data['category']
+    # clinical_id = data['clinical_id']
     
-    if clinical_id is None or clinical_id == 'undefined' or clinical_id == 'null':
-        clinical_id = None
+    data = request.get_json()
+    writer = data.get('writer')
+    title = data.get('title')
+    content = data.get('content')
+    category = data.get('category')
+    clinical_id = data.get('clinical_id')
 
     try:
         cur = mysql.connection.cursor()
         
-        if clinical_id is not None:
+        if clinical_id:
             cur.execute("INSERT INTO board(writer, title, content, category, clinical_id) VALUES(%s, %s, %s, %s, %s)", (writer, title, content, category, clinical_id))
         else:
             cur.execute("INSERT INTO board(writer, title, content, category) VALUES(%s, %s, %s, %s)", (writer, title, content, category))
