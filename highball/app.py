@@ -207,18 +207,10 @@ def update_post(id):
     title = data['title']
     content = data['content']
     category = data['category']
-    clinical_id = data['clinical_id']
-    
-    if clinical_id == '' and clinical_id == 'undefined' and clinical_id == 'null' :
-        clinical_id = None
     
     try:
         cur = mysql.connection.cursor()
-        if clinical_id:
-            cur.execute("UPDATE board SET writer=%s, title=%s, content=%s, category=%s, clinical_id=%s WHERE id=%s", (writer, title, content, category, clinical_id, id))
-        else:
-            cur.execute("UPDATE board SET writer=%s, title=%s, content=%s, category=%s WHERE id=%s", (writer, title, content, category, id))
-
+        cur.execute("UPDATE board SET writer=%s, title=%s, content=%s, category=%s WHERE id=%s", (writer, title, content, category, id))
         mysql.connection.commit()
         cur.close()
         return 'updated successfully', 200
@@ -317,7 +309,6 @@ def check_id():
       return "duplicated", 200
     else:
       return "available", 200
-
 
 if __name__ == '__main__':
    app.run('0.0.0.0', port=5000, debug=True)
