@@ -181,6 +181,9 @@ def add_post():
     category = data['category']
     clinical_id = data['clinical_id']
     
+    if clinical_id is None or clinical_id == 'undefined' or clinical_id == 'null':
+        clinical_id = None
+
     try:
         cur = mysql.connection.cursor()
         
