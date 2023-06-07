@@ -209,15 +209,15 @@ def update_post(id):
     category = data['category']
     clinical_id = data['clinical_id']
     
-    print(clinical_id)
+    if not clinical_id:
+        clinical_id = ''
     
     try:
         cur = mysql.connection.cursor()
-        
         if clinical_id is not None:
-            cur.execute("UPDATE board SET(writer=%s, title=%s, content=%s, category=%s, clinical_id=%s WHERE id=%s)", (writer, title, content, category,  clinical_id, id))
+            cur.execute("UPDATE board SET writer=%s, title=%s, content=%s, category=%s, clinical_id=%s WHERE id=%s", (writer, title, content, category,  clinical_id, id))
         else:
-            cur.execute("UPDATE board SET(writer=%s, title=%s, content=%s, category=%s, WHERE id=%s)", (writer, title, content, category, clinical_id, id))
+            cur.execute("UPDATE board SET writer=%s, title=%s, content=%s, category=%s WHERE id=%s", (writer, title, content, category, id))
 
         mysql.connection.commit()
         cur.close()
