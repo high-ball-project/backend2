@@ -214,8 +214,8 @@ def update_post(id):
     
     try:
         cur = mysql.connection.cursor()
-        if clinical_id is not None and clinical_id != 'None':
-            cur.execute("UPDATE board SET writer=%s, title=%s, content=%s, category=%s, clinical_id=%s WHERE id=%s", (writer, title, content, category,  clinical_id, id))
+        if clinical_id:
+            cur.execute("UPDATE board SET writer=%s, title=%s, content=%s, category=%s, clinical_id=%s WHERE id=%s", (writer, title, content, category, clinical_id, id))
         else:
             cur.execute("UPDATE board SET writer=%s, title=%s, content=%s, category=%s WHERE id=%s", (writer, title, content, category, id))
 
