@@ -172,15 +172,6 @@ def get_post(post_id):
 @app.route('/board/add', methods=['POST'])
 def add_post():
     #파라미터 받기
-    # data = request.data.decode('utf-8')
-    # data = eval(data)
-    
-    # writer = data['writer']
-    # title = data['title']
-    # content = data['content']
-    # category = data['category']
-    # clinical_id = data['clinical_id']
-
     data = request.get_json()
     writer = data.get('writer')
     title = data.get('title')
