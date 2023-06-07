@@ -126,13 +126,12 @@ def upload_to_db():
     try:
         cur.execute("INSERT INTO clinical_info (img_path, `나이`, `수술연월일`, `진단명`, `암의 위치`, `암의 개수`, `암의 장경`, NG, HG, HG_score_1, HG_score_2, HG_score_3, DCIS_or_LCIS_여부, DCIS_or_LCIS_type, T_category, ER, ER_Allred_score, PR, PR_Allred_score, `KI-67_LI_percent`, HER2, HER2_IHC, HER2_SISH, HER2_SISH_ratio, BRCA_mutation, N_category) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                     (img_path, age, date, disease, cancerPoint, cancerN, cancerLen, NG, HG, HG_score_1, HG_score_2, HG_score_3, DCIS_or_LCIS, DCIS_or_LCIS_type, T_category, ER, ER_Allred_score, PR, PR_Allred_score, KI_67_LI_percent, HER2, HER2_IHC, HER2_SISH, HER2_SISH_ratio, BRCA_mutation, N_category))
-        mysql.connection.commit()
         
-        cur.execute('SELECT * FROM board WHERE img_path = %s', (img_path,))
-        id = cur.fetchall()
+        new_id = cur.lastrowid
+        mysql.connection.commit()
         cur.close()
         
-        return str(id), 200
+        return str(new_id), 200
 
     except Exception as e:
         return 'RDS Insert failed: ' + str(e), 500
