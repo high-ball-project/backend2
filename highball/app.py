@@ -209,8 +209,7 @@ def update_post(id):
     category = data['category']
     clinical_id = data['clinical_id']
     
-    if not clinical_id:
-        clinical_id = ''
+    print(clinical_id)
     
     try:
         cur = mysql.connection.cursor()
