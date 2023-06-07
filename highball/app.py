@@ -180,18 +180,21 @@ def add_post():
     # content = data['content']
     # category = data['category']
     # clinical_id = data['clinical_id']
-    
+
     data = request.get_json()
     writer = data.get('writer')
     title = data.get('title')
     content = data.get('content')
     category = data.get('category')
     clinical_id = data.get('clinical_id')
+    
+    if clinical_id is None or clinical_id == 'undefined' or clinical_id == 'null':
+        clinical_id = None
 
     try:
         cur = mysql.connection.cursor()
         
-        if clinical_id:
+        if clinical_id is not None:
             cur.execute("INSERT INTO board(writer, title, content, category, clinical_id) VALUES(%s, %s, %s, %s, %s)", (writer, title, content, category, clinical_id))
         else:
             cur.execute("INSERT INTO board(writer, title, content, category) VALUES(%s, %s, %s, %s)", (writer, title, content, category))
