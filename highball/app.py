@@ -210,7 +210,7 @@ def update_post(id):
     
     try:
         cur = mysql.connection.cursor()
-        cur.execute("UPDATE board SET writer=%s, title=%s, content=%s, category=%s WHERE id=%s", (writer, title, content, category, id))
+        cur.execute("UPDATE board SET writer=%s, title=%s, content=%s, deletedAt=null, category=%s WHERE id=%s", (writer, title, content, category, id))
         mysql.connection.commit()
         cur.close()
         return 'updated successfully', 200
