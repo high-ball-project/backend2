@@ -160,7 +160,7 @@ def get_post(post_id):
     cur.close()
     
     # 딕셔너리로 변환
-    keys = ["id", "title", "writer", "content", "createdAt", "updatedAt", "deletedAt", "category", "img_path"]
+    keys = ["id", "title", "writer", "content", "createdAt", "updatedAt", "deletedAt", "category", "img_path", 'clinical_id']
     result = [dict(zip(keys, item)) for item in board]
     
     if result:
@@ -209,11 +209,12 @@ def update_post(id):
     category = data['category']
     clinical_id = data['clinical_id']
     
-    print(clinical_id)
+    if clinical_id == '' and clinical_id == 'undefined' and clinical_id == 'null' :
+        clinical_id = None
     
     try:
         cur = mysql.connection.cursor()
-        if clinical_id is not None:
+        if clinical_id is not None and clinical_id != 'None':
             cur.execute("UPDATE board SET writer=%s, title=%s, content=%s, category=%s, clinical_id=%s WHERE id=%s", (writer, title, content, category,  clinical_id, id))
         else:
             cur.execute("UPDATE board SET writer=%s, title=%s, content=%s, category=%s WHERE id=%s", (writer, title, content, category, id))
