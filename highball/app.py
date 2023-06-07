@@ -168,7 +168,6 @@ def get_post(post_id):
     else:
         return '게시글을 찾을 수 없습니다.', 404
 
-
 #글 작성
 @app.route('/board/add', methods=['POST'])
 def add_post():
@@ -180,10 +179,11 @@ def add_post():
     title = data['title']
     content = data['content']
     category = data['category']
+    clinical_id = data['clinical_id']
     
     try:
         cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO board(writer, title, content, category) VALUES(%s, %s, %s, %s)", (writer, title, content, category))
+        cur.execute("INSERT INTO board(writer, title, content, category, clinical_id) VALUES(%s, %s, %s, %s, %s)", (writer, title, content, category, clinical_id))
         mysql.connection.commit()
         cur.close()
         return 'new posting successfully', 200
