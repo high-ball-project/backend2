@@ -228,7 +228,7 @@ def delete_post(id):
     post = cursor.fetchone()
     
     if post:
-        cursor.execute("UPDATE board SET deletedAt = CURRENT_TIMESTAMP() WHERE id=%s)", (id,))
+        cursor.execute("UPDATE board SET deletedAt = CURRENT_TIMESTAMP() WHERE id=%s", (id,))
         mysql.connection.commit()
         return 'deleted successfully', 200
     else:
