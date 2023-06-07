@@ -168,6 +168,7 @@ def get_post(post_id):
     else:
         return '게시글을 찾을 수 없습니다.', 404
 
+
 #글 작성
 @app.route('/board/add', methods=['POST'])
 def add_post():
@@ -180,10 +181,11 @@ def add_post():
     content = data['content']
     category = data['category']
     img_path = data['img_path']
+    clinical_id = data['clinical_id']
     
     try:
         cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO posts(writer, title, content, category, img_path) VALUES(%s, %s, %s, %s, %s)", (writer, title, content, category, img_path))
+        cur.execute("INSERT INTO posts(writer, title, content, category, img_path, clinical_id) VALUES(%s, %s, %s, %s, %s, %s)", (writer, title, content, category, img_path, clinical_id))
         mysql.connection.commit()
         cur.close()
         return 'new posting successfully', 200
@@ -230,6 +232,25 @@ def delete_post(id):
     else:
         return jsonify({'message': 'ID에 해당하는 게시글이 없습니다.'}), 404
     
+
+#========== 검진 데이터 CRUD
+#검진 데이터 가져오기
+@app.route('/clinical/<int:id>')
+def clinical(id):
+    
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM clinical_info WHERE id=%s", (id))
+    clinical = cur.fetchall()
+    cur.close()
+   
+    # 각 항목을 딕셔너리로 변환
+    keys = ['img_path', '나이', '수술연월일', '진단명', '암의 위치', '암의 개수', '암의 장경', 'NG', 'HG', 'HG_score_1', 'HG_score_2', 'HG_score_3', 'DCIS_or_LCIS_여부', 'DCIS_or_LCIS_type', 'T_category', 'ER', 'ER_Allred_score', 'PR', 'PR_Allred_score', 'KI-67_LI_percent', 'HER2', 'HER2_IHC', 'HER2_SISH', 'HER2_SISH_ratio', 'BRCA_mutation', 'N_category']
+    result = [dict(zip(keys, item)) for item in clinical]
+    
+    return jsonify(result)
+
+
+
 
 #========= 로그인 및 회원가입 간단한 구현 (보안x)
 #로그인
