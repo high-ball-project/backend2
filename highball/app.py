@@ -127,7 +127,7 @@ def upload_to_db():
         cur.execute("INSERT INTO clinical_info (img_path, `나이`, `수술연월일`, `진단명`, `암의 위치`, `암의 개수`, `암의 장경`, NG, HG, HG_score_1, HG_score_2, HG_score_3, DCIS_or_LCIS_여부, DCIS_or_LCIS_type, T_category, ER, ER_Allred_score, PR, PR_Allred_score, `KI-67_LI_percent`, HER2, HER2_IHC, HER2_SISH, HER2_SISH_ratio, BRCA_mutation, N_category) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                     (img_path, age, date, disease, cancerPoint, cancerN, cancerLen, NG, HG, HG_score_1, HG_score_2, HG_score_3, DCIS_or_LCIS, DCIS_or_LCIS_type, T_category, ER, ER_Allred_score, PR, PR_Allred_score, KI_67_LI_percent, HER2, HER2_IHC, HER2_SISH, HER2_SISH_ratio, BRCA_mutation, N_category))
         
-        new_id = cur.lastrowid
+        new_id = cur.lastrowid #삽입한 행의 마지막 ID 추출
         mysql.connection.commit()
         cur.close()
         
@@ -141,7 +141,7 @@ def upload_to_db():
 @app.route('/board')
 def board():
     cur = mysql.connection.cursor()
-    cur.execute('SELECT * FROM board')
+    cur.execute('SELECT * FROM board WHERE deletedAt is null;')
     board = cur.fetchall()
     cur.close()
    
