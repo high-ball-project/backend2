@@ -184,7 +184,7 @@ def add_post():
     try:
         cur = mysql.connection.cursor()
         
-        if clinical_id != '0':
+        if clinical_id is not None:
             cur.execute("INSERT INTO board(writer, title, content, category, clinical_id) VALUES(%s, %s, %s, %s, %s)", (writer, title, content, category, clinical_id))
         else:
             cur.execute("INSERT INTO board(writer, title, content, category) VALUES(%s, %s, %s, %s)", (writer, title, content, category))
@@ -212,7 +212,7 @@ def update_post(id):
     try:
         cur = mysql.connection.cursor()
         
-        if clinical_id != '0':
+        if clinical_id is not None:
             cur.execute("UPDATE board SET(writer=%s, title=%s, content=%s, category=%s  clinical_id=%s WHERE id=%s)", (writer, title, content, category,  clinical_id, id))
         else:
             cur.execute("UPDATE board SET(writer=%s, title=%s, content=%s, category=%s, WHERE id=%s)", (writer, title, content, category, clinical_id, id))
@@ -234,7 +234,7 @@ def delete_post(id):
     post = cursor.fetchone()
     
     if post:
-        cursor.execute("UPDATE board SET(deletedAt=CURRENT_TIMESTAMP() WHERE id=%s)", (id,))
+        cursor.execute("UPDATE board SET deletedAt = CURRENT_TIMESTAMP() WHERE id=%s)", (id,))
         mysql.connection.commit()
         return 'deleted successfully', 200
     else:
@@ -251,7 +251,7 @@ def clinical(id):
     cur.close()
    
     # 각 항목을 딕셔너리로 변환
-    keys = ['img_path', '나이', '수술연월일', '진단명', '암의 위치', '암의 개수', '암의 장경', 'NG', 'HG', 'HG_score_1', 'HG_score_2', 'HG_score_3', 'DCIS_or_LCIS_여부', 'DCIS_or_LCIS_type', 'T_category', 'ER', 'ER_Allred_score', 'PR', 'PR_Allred_score', 'KI-67_LI_percent', 'HER2', 'HER2_IHC', 'HER2_SISH', 'HER2_SISH_ratio', 'BRCA_mutation', 'N_category']
+    keys = ['id','img_path', '나이', '수술연월일', '진단명', '암의 위치', '암의 개수', '암의 장경', 'NG', 'HG', 'HG_score_1', 'HG_score_2', 'HG_score_3', 'DCIS_or_LCIS_여부', 'DCIS_or_LCIS_type', 'T_category', 'ER', 'ER_Allred_score', 'PR', 'PR_Allred_score', 'KI-67_LI_percent', 'HER2', 'HER2_IHC', 'HER2_SISH', 'HER2_SISH_ratio', 'BRCA_mutation', 'N_category']
     result = [dict(zip(keys, item)) for item in clinical]
     
     return jsonify(result)
