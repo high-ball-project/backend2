@@ -209,6 +209,9 @@ def update_post(id):
     category = data['category']
     clinical_id = data['clinical_id']
     
+    if str(clinical_id) == 'None' or str(clinical_id) == 'null':
+         clinical_id = ''
+    
     try:
         cur = mysql.connection.cursor()
         
