@@ -180,12 +180,11 @@ def add_post():
     title = data['title']
     content = data['content']
     category = data['category']
-    img_path = data['img_path']
     clinical_id = data['clinical_id']
     
     try:
         cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO posts(writer, title, content, category, img_path, clinical_id) VALUES(%s, %s, %s, %s, %s, %s)", (writer, title, content, category, img_path, clinical_id))
+        cur.execute("INSERT INTO posts(writer, title, content, category, clinical_id) VALUES(%s, %s, %s, %s, %s)", (writer, title, content, category, clinical_id))
         mysql.connection.commit()
         cur.close()
         return 'new posting successfully', 200
@@ -211,10 +210,10 @@ def update_post(id):
         cur.execute("UPDATE board SET(writer=%s, title=%s, content=%s, category=%s, img_path=%s WHERE id=%s)", (writer, title, content, category, img_path, id))
         mysql.connection.commit()
         cur.close()
-        return 'new posting successfully', 200
+        return 'updated successfully', 200
 
     except Exception as e:
-        return 'new posting failed: ' + str(e), 500
+        return 'updated failed: ' + str(e), 500
 
 #글 삭제
 @app.route('/board/delete/<int:id>', methods=['POST'])
